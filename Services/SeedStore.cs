@@ -33,4 +33,15 @@ public sealed class SeedStore
 
     public void Save(AppState state) =>
         File.WriteAllText(_path, JsonSerializer.Serialize(state, JsonOptions));
+
+    public string CreateBackup(AppState state)
+    {
+        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var folder = Path.Combine(documents, "Seed Backups");
+        Directory.CreateDirectory(folder);
+        var filename = $"Seed-backup-{DateTime.Now:yyyyMMdd-HHmmss-fff}.json";
+        var backupPath = Path.Combine(folder, filename);
+        File.WriteAllText(backupPath, JsonSerializer.Serialize(state, JsonOptions));
+        return backupPath;
+    }
 }

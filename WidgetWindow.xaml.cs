@@ -28,9 +28,12 @@ public partial class WidgetWindow : Window
         var days = Math.Max(0, (int)(DateTime.Now - state.StartedAt).TotalDays);
         var stage = SeedContent.StageFor(days);
         Plant.Level = stage.Level;
+        Plant.AgeDays = Math.Min(365, (DateTime.Now - state.StartedAt).TotalDays + 1);
         DayText.Text = $"DAY {days + 1}";
         LevelText.Text = $"Lv.{stage.Level} · {stage.Name}";
     }
+
+    public void PlayWither() => Plant.PlayWither();
 
     private void CloseWidget(object sender, RoutedEventArgs e) => Close();
 }

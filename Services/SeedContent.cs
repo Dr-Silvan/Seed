@@ -4,18 +4,7 @@ namespace Seed.Services;
 
 public static class SeedContent
 {
-    public static readonly GrowthStage[] Stages =
-    [
-        new(1, 0, "씨앗", "시작은 보이지 않는 곳에서 먼저 자라요."),
-        new(2, 3, "새싹", "작은 선택이 땅을 밀어 올렸어요."),
-        new(3, 7, "어린잎", "첫 고비를 지나 뿌리가 단단해졌어요."),
-        new(4, 14, "푸른 줄기", "반복이 의지가 아니라 환경이 되어가요."),
-        new(5, 30, "작은 나무", "한 달의 선택이 새로운 기준을 만들었어요."),
-        new(6, 60, "깊은 뿌리", "흔들려도 돌아올 곳을 알고 있어요."),
-        new(7, 90, "꽃망울", "당신의 시간이 곧 꽃을 피워요."),
-        new(8, 180, "만개", "반년 동안 돌본 삶이 환하게 피었어요."),
-        new(9, 365, "생명의 나무", "한 해의 선택이 하나의 세계가 되었어요.")
-    ];
+    public static readonly GrowthStage[] Stages = BuildGrowthStages();
 
     public static readonly string[] Reasons =
     [
@@ -43,6 +32,33 @@ public static class SeedContent
 
     public static GrowthStage StageFor(int days) =>
         Stages.Last(stage => days >= stage.MinimumDays);
+
+    private static GrowthStage[] BuildGrowthStages()
+    {
+        var days = new List<int> { 0, 1, 3 };
+        for (var day = 7; day <= 364; day += 7) days.Add(day);
+
+        return days.Select((day, index) =>
+        {
+            var progress = index / (double)(days.Count - 1);
+            var (name, message) = progress switch
+            {
+                < .02 => ("첫 새싹", "첫날의 선택이 흙을 밀어 올리고 작은 초록이 되었어요."),
+                < .04 => ("새싹의 숨", "아주 작은 잎이 빛을 향해 천천히 몸을 펴고 있어요."),
+                < .10 => ("어린 줄기", "서두르지 않고 매일 조금씩 높이와 잎을 더해가고 있어요."),
+                < .22 => ($"푸른 줄기 {index - 3}", "잎이 하나씩 늘며 새로운 리듬을 배우고 있어요."),
+                < .34 => ($"단단한 줄기 {index - 9}", "매주의 선택이 줄기를 조금 더 단단하게 만들었어요."),
+                < .47 => ($"꽃의 계절 {index - 15}", "지켜낸 시간이 꽃으로 보이기 시작했어요."),
+                < .52 => ("뿌리 내림", "화분의 경계를 지나 스스로의 땅에 뿌리를 내렸어요."),
+                < .67 => ($"어린 묘목 {index - 26}", "작은 가지들이 새로운 방향으로 뻗어나가고 있어요."),
+                < .80 => ($"튼튼한 묘목 {index - 34}", "흔들림을 견딜 만큼 몸통과 가지가 굵어졌어요."),
+                < .91 => ($"푸른 나무 {index - 42}", "이제 하루의 선택이 넓은 그늘을 만들어요."),
+                < 1 => ($"열매 맺는 나무 {index - 48}", "오래 지켜낸 시간이 작은 열매로 돌아오고 있어요."),
+                _ => ("생명의 나무", "한 해의 선택이 뿌리와 꽃과 열매를 가진 하나의 세계가 되었어요.")
+            };
+            return new GrowthStage(index + 1, day, name, message);
+        }).ToArray();
+    }
 
     public static string AdviceFor(string reason) => reason switch
     {

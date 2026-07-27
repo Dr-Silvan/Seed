@@ -17,6 +17,8 @@ public partial class MainWindow : Window
     private WidgetWindow? _widget;
     private readonly bool _startHidden;
     private bool _allowExit;
+    private WisdomEntry _wisdom = DailyWisdom.RandomEntry();
+    private DateTime _wisdomDate = DateTime.Today;
 
     public MainWindow(bool startHidden = false)
     {
@@ -79,12 +81,19 @@ public partial class MainWindow : Window
         var days = (int)elapsed.TotalDays;
         var stage = SeedContent.StageFor(days);
         MainPlant.Level = stage.Level;
+        MainPlant.AgeDays = Math.Min(365, elapsed.TotalDays + 1);
         DayText.Text = $"DAY {days + 1}";
         PreciseTimeText.Text = $"{days}일 {elapsed.Hours:D2}시간 {elapsed.Minutes:D2}분 {elapsed.Seconds:D2}초";
         HabitText.Text = $"{_state.HabitName} · {_state.StartedAt:yyyy.MM.dd} 시작";
         StageText.Text = $"Lv.{stage.Level}  {stage.Name}";
         StageMessage.Text = stage.Message;
-        DailyMessage.Text = SeedContent.GroundingMessages[DateTime.Today.DayOfYear % SeedContent.GroundingMessages.Length];
+        if (_wisdomDate != DateTime.Today)
+        {
+            _wisdom = DailyWisdom.RandomEntry(_wisdom);
+            _wisdomDate = DateTime.Today;
+        }
+        DailyMessage.Text = _wisdom.Text;
+        DailyAttribution.Text = $"— {_wisdom.Attribution} · {_wisdom.Reference}";
 
         var index = Array.IndexOf(SeedContent.Stages, stage);
         if (index < SeedContent.Stages.Length - 1)
@@ -127,13 +136,19 @@ public partial class MainWindow : Window
         }
     }
 
+    private void OpenWisdom(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        new WisdomWindow(_wisdom) { Owner = this }.ShowDialog();
+    }
+
     private async void OpenFailure(object sender, RoutedEventArgs e)
     {
         var dialog = new FailureWindow() { Owner = this };
         if (dialog.ShowDialog() != true) return;
 
         MainPlant.PlayWither();
-        await Task.Delay(1500);
+        _widget?.PlayWither();
+        await Task.Delay(2300);
         _state.Attempts.Add(new AttemptRecord
         {
             StartedAt = _state.StartedAt,
@@ -142,6 +157,7 @@ public partial class MainWindow : Window
             Note = dialog.Note
         });
         _state.StartedAt = DateTime.Now;
+        MainPlant.ResetAfterFailure();
         _store.Save(_state);
         RefreshAll();
         MessageBox.Show("기록했어요. 식물이 죽은 것이 아니라, 다음 씨앗을 위한 정보가 남았어요.",
@@ -224,6 +240,40 @@ public partial class MainWindow : Window
         _store.Save(_state);
         RefreshAll();
         MessageBox.Show("저장했어요.", "Seed");
+    }
+
+    private void BackupAndReset(object sender, RoutedEventArgs e)
+    {
+        var answer = MessageBox.Show(
+            "현재 연속 기록과 실패·충동 기록을 백업한 뒤 모두 초기화합니다.\n\n이 작업을 계속할까요?",
+            "Seed 기록 초기화",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+        if (answer != MessageBoxResult.Yes) return;
+
+        try
+        {
+            var backupPath = _store.CreateBackup(_state);
+            _state.Attempts.Clear();
+            _state.Temptations.Clear();
+            _state.StartedAt = DateTime.Now;
+            MainPlant.ResetAfterFailure();
+            _store.Save(_state);
+            RefreshAll();
+            MessageBox.Show(
+                $"기록을 백업하고 새 씨앗으로 시작했습니다.\n\n백업 위치:\n{backupPath}",
+                "초기화 완료",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(
+                $"백업 파일을 만들지 못해 초기화하지 않았습니다.\n\n{exception.Message}",
+                "초기화 취소",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
 
     private void ToggleWidget(object sender, RoutedEventArgs e)
