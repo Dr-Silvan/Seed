@@ -24,14 +24,17 @@
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Background="#214B3A" CornerRadius="24" Margin="10,0,0,0" Padding="22">
-                <StackPanel>
-                    <TextBlock Text="무엇이 시작점이었나요?" Foreground="#CDE0D3"/>
-                    <ComboBox x:Name="TriggerBox" Margin="0,8,0,18" Padding="9"/>
-                    <TextBlock Text="방향을 바꿀 작은 행동" Foreground="#CDE0D3"/>
-                    <TextBlock x:Name="ActionText" Foreground="White" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,8,0,18"/>
-                    <TextBlock Text="추천" Foreground="#CDE0D3" Margin="0,0,0,7"/>
-                    <ItemsControl x:Name="ResourceList"/>
-                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Padding="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Text="무엇이 시작점이었나요?" Foreground="#CDE0D3"/>
+                        <ComboBox x:Name="TriggerBox" Margin="0,8,0,18" Padding="9"/>
+                        <TextBlock Text="방향을 바꿀 작은 행동" Foreground="#CDE0D3"/>
+                        <TextBlock x:Name="ActionText" Foreground="White" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,8,0,18"/>
+                        <TextBlock Text="추천" Foreground="#CDE0D3" Margin="0,0,0,7"/>
+                        <ItemsControl x:Name="ResourceList"/>
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
         </Grid>
         <DockPanel Grid.Row="2">

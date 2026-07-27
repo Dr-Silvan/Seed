@@ -7,7 +7,9 @@
     <Window.Resources>
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFFCF4"/>
-            <Setter Property="CornerRadius" Value="24"/>
+            <Setter Property="BorderBrush" Value="#E7E4D9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="22"/>
             <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="0,0,16,16"/>
         </Style>
@@ -61,8 +63,12 @@
                     <RadioButton x:Name="SettingsNav" Content="설정" Style="{StaticResource NavStyle}" Checked="Navigate"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom">
-                    <TextBlock Text="충동은 지나가요." Foreground="#6F7F76" FontSize="12" Margin="4,0,0,10"/>
-                    <Button Content="지금 버티기" Style="{StaticResource PrimaryButton}" Click="OpenTemptation"/>
+                    <Border Background="#DDE9DD" CornerRadius="14" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="오늘도 성장 중" Foreground="#39745A" FontWeight="SemiBold"/>
+                            <TextBlock Text="작은 선택이 뿌리가 됩니다." Foreground="#6F7F76" FontSize="11" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -110,16 +116,20 @@
                             <ProgressBar x:Name="GrowthProgress" Height="8" Foreground="#55936F" Background="#E7E9DF"/>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource CardStyle}">
+                    <Border Style="{StaticResource CardStyle}" Cursor="Hand" MouseLeftButtonUp="OpenWisdom">
                         <StackPanel>
-                            <TextBlock Text="오늘의 한 문장" FontSize="14" Foreground="#6F7F76"/>
-                            <TextBlock x:Name="DailyMessage" TextWrapping="Wrap" FontSize="18" FontWeight="SemiBold" Foreground="#24352D" Margin="0,10,0,0"/>
+                            <DockPanel>
+                                <TextBlock Text="오늘의 성찰" FontSize="13" Foreground="#6F7F76"/>
+                                <TextBlock DockPanel.Dock="Right" Text="관련 영상·글  ↗" FontSize="12" Foreground="#39745A"/>
+                            </DockPanel>
+                            <TextBlock x:Name="DailyMessage" TextWrapping="Wrap" FontSize="17" FontWeight="SemiBold" LineHeight="27" Foreground="#24352D" Margin="0,12,0,10"/>
+                            <TextBlock x:Name="DailyAttribution" FontSize="12" Foreground="#829087"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource CardStyle}">
                         <StackPanel>
-                            <TextBlock Text="빠른 행동" FontSize="14" Foreground="#6F7F76" Margin="0,0,0,12"/>
-                            <Button Content="충동 기록하고 60초 호흡" Style="{StaticResource PrimaryButton}" Click="OpenTemptation"/>
+                            <TextBlock Text="빠른 행동" FontSize="13" Foreground="#6F7F76" Margin="0,0,0,12"/>
+                            <Button Content="지금 버티기 · 60초 호흡" Style="{StaticResource PrimaryButton}" Click="OpenTemptation"/>
                             <Button Content="데스크톱 식물 켜기/끄기" Margin="0,9,0,0" Click="ToggleWidget"/>
                         </StackPanel>
                     </Border>
@@ -180,6 +190,15 @@
                     </Border>
                     <TextBlock Text="Seed는 Windows 로그인 시 식물 위젯으로 자동 시작됩니다. 메인 창의 ×를 눌러도 위젯이 켜져 있으면 작업 표시줄 알림 영역에서 계속 실행됩니다. 완전히 종료하려면 Seed 트레이 아이콘을 우클릭하세요." TextWrapping="Wrap" Foreground="#405249" Margin="0,0,0,12"/>
                     <TextBlock Text="데이터는 이 컴퓨터의 사용자 폴더에만 저장됩니다. Seed v0.1은 계정이나 서버를 사용하지 않습니다." TextWrapping="Wrap" Foreground="#6F7F76"/>
+                    <Border Background="#F5E8E1" BorderBrush="#E8CFC1" BorderThickness="1" CornerRadius="18" Padding="20" Margin="0,22,0,0">
+                        <StackPanel>
+                            <TextBlock Text="기록 초기화" FontSize="17" FontWeight="Bold" Foreground="#733F35"/>
+                            <TextBlock Text="현재 기록을 백업 파일로 보관한 뒤, 연속 기록·실패 원인·충동 기록을 새로 시작합니다."
+                                       TextWrapping="Wrap" Foreground="#825F57" Margin="0,6,0,14"/>
+                            <Button Content="백업하고 초기화" Background="#B86652" Foreground="White"
+                                    HorizontalAlignment="Left" Click="BackupAndReset"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

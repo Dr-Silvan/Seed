@@ -5,4 +5,5 @@ global using Button = System.Windows.Controls.Button;
 global using RadioButton = System.Windows.Controls.RadioButton;
 global using MessageBox = System.Windows.MessageBox;
 global using Pen = System.Windows.Media.Pen;
+global using Brush = System.Windows.Media.Brush;
 global using HorizontalAlignment = System.Windows.HorizontalAlignment;
