@@ -1,0 +1,187 @@
+<Window x:Class="Seed.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Seed.Controls"
+        Title="Seed" Width="1120" Height="760" MinWidth="940" MinHeight="650"
+        WindowStartupLocation="CenterScreen" Background="#F6F2E8">
+    <Window.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFFCF4"/>
+            <Setter Property="CornerRadius" Value="24"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="0,0,16,16"/>
+        </Style>
+        <Style x:Key="NavStyle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#64736B"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="16,11"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bg" Background="Transparent" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#DDE9DD"/>
+                                <Setter Property="Foreground" Value="#2F684E"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#E8EFE8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#39745A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="20,12"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="210"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="#EEF1E8" Padding="22">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" Margin="4,12,0,35">
+                        <Ellipse Width="20" Height="20" Fill="#39745A"/>
+                        <TextBlock Text="SEED" FontSize="21" FontWeight="Bold" Foreground="#24352D" Margin="10,-2,0,0"/>
+                    </StackPanel>
+                    <RadioButton x:Name="TodayNav" Content="오늘" Style="{StaticResource NavStyle}" IsChecked="True" Checked="Navigate"/>
+                    <RadioButton x:Name="CalendarNav" Content="365일 정원" Style="{StaticResource NavStyle}" Checked="Navigate"/>
+                    <RadioButton x:Name="InsightsNav" Content="기록과 인사이트" Style="{StaticResource NavStyle}" Checked="Navigate"/>
+                    <RadioButton x:Name="SettingsNav" Content="설정" Style="{StaticResource NavStyle}" Checked="Navigate"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <TextBlock Text="충동은 지나가요." Foreground="#6F7F76" FontSize="12" Margin="4,0,0,10"/>
+                    <Button Content="지금 버티기" Style="{StaticResource PrimaryButton}" Click="OpenTemptation"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="34,28,24,24">
+            <Grid x:Name="TodayPage">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.35*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock x:Name="GreetingText" Text="오늘도 자라고 있어요" FontSize="28" FontWeight="Bold" Foreground="#24352D"/>
+                        <TextBlock x:Name="HabitText" FontSize="14" Foreground="#6F7F76" Margin="0,7,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,22,16,16">
+                        <Grid>
+                            <controls:PlantView x:Name="MainPlant" Margin="20,5,20,85"/>
+                            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                                <TextBlock x:Name="DayText" Text="DAY 1" FontSize="34" FontWeight="Bold" Foreground="#24352D" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="PreciseTimeText" Foreground="#6F7F76" HorizontalAlignment="Center" Margin="0,5"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                        <DockPanel>
+                            <StackPanel>
+                                <TextBlock x:Name="StageText" FontSize="18" FontWeight="Bold" Foreground="#24352D"/>
+                                <TextBlock x:Name="StageMessage" Foreground="#6F7F76" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <Button DockPanel.Dock="Right" Content="실패 기록" Margin="20,0,0,0" Click="OpenFailure"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+                <StackPanel Grid.Column="1">
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="다음 성장까지" FontSize="14" Foreground="#6F7F76"/>
+                            <TextBlock x:Name="NextStageText" FontSize="21" FontWeight="Bold" Foreground="#24352D" Margin="0,6,0,14"/>
+                            <ProgressBar x:Name="GrowthProgress" Height="8" Foreground="#55936F" Background="#E7E9DF"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="오늘의 한 문장" FontSize="14" Foreground="#6F7F76"/>
+                            <TextBlock x:Name="DailyMessage" TextWrapping="Wrap" FontSize="18" FontWeight="SemiBold" Foreground="#24352D" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="빠른 행동" FontSize="14" Foreground="#6F7F76" Margin="0,0,0,12"/>
+                            <Button Content="충동 기록하고 60초 호흡" Style="{StaticResource PrimaryButton}" Click="OpenTemptation"/>
+                            <Button Content="데스크톱 식물 켜기/끄기" Margin="0,9,0,0" Click="ToggleWidget"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <ScrollViewer x:Name="CalendarPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="365일 정원" FontSize="28" FontWeight="Bold" Foreground="#24352D"/>
+                    <TextBlock Text="각 칸은 하루입니다. 현재 시도는 초록색, 지난 시도는 황토색으로 표시됩니다." Foreground="#6F7F76" Margin="0,7,0,20"/>
+                    <Border Style="{StaticResource CardStyle}">
+                        <WrapPanel x:Name="CalendarGrid"/>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer x:Name="InsightsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="기록과 인사이트" FontSize="28" FontWeight="Bold" Foreground="#24352D"/>
+                    <TextBlock Text="비난이 아니라 다음 환경을 더 쉽게 만들기 위한 기록이에요." Foreground="#6F7F76" Margin="0,7,0,20"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="가장 흔한 원인" Foreground="#6F7F76"/>
+                                <TextBlock x:Name="TopReasonText" FontSize="24" FontWeight="Bold" Foreground="#24352D" Margin="0,6,0,12"/>
+                                <TextBlock x:Name="AdviceText" TextWrapping="Wrap" FontSize="15" Foreground="#405249"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="지금까지의 기록" Foreground="#6F7F76"/>
+                                <TextBlock x:Name="StatsText" TextWrapping="Wrap" FontSize="18" FontWeight="SemiBold" Foreground="#24352D" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="실패 기록" FontSize="18" FontWeight="Bold" Foreground="#24352D" Margin="0,0,0,12"/>
+                            <ItemsControl x:Name="AttemptList"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed">
+                <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+                    <TextBlock Text="설정" FontSize="28" FontWeight="Bold" Foreground="#24352D"/>
+                    <Border Style="{StaticResource CardStyle}" Margin="0,22,0,16">
+                        <StackPanel>
+                            <TextBlock Text="내가 지키고 싶은 것" Foreground="#6F7F76"/>
+                            <TextBox x:Name="HabitNameBox" FontSize="18" Padding="12" Margin="0,8,0,18"/>
+                            <TextBlock Text="현재 시도의 시작 날짜" Foreground="#6F7F76"/>
+                            <DatePicker x:Name="StartDatePicker" FontSize="17" Padding="8" Margin="0,6,0,6"/>
+                            <TextBlock x:Name="StartedAtText" Foreground="#6F7F76" Margin="0,0,0,18"/>
+                            <Button Content="설정 저장" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Click="SaveSettings"/>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="Seed는 Windows 로그인 시 식물 위젯으로 자동 시작됩니다. 메인 창의 ×를 눌러도 위젯이 켜져 있으면 작업 표시줄 알림 영역에서 계속 실행됩니다. 완전히 종료하려면 Seed 트레이 아이콘을 우클릭하세요." TextWrapping="Wrap" Foreground="#405249" Margin="0,0,0,12"/>
+                    <TextBlock Text="데이터는 이 컴퓨터의 사용자 폴더에만 저장됩니다. Seed v0.1은 계정이나 서버를 사용하지 않습니다." TextWrapping="Wrap" Foreground="#6F7F76"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
